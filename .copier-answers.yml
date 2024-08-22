@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: 2024.08.19
+_src_path: gh:scientific-python/cookie
+backend: hatch
+email: kreczko@cern.ch
+full_name: Luke Kreczko
+license: Apache
+org: BristolComputing
+project_name: htcondor-dashboard
+project_short_description: A simple dashboard for a HTCondor cluster
+url: https://github.com/BristolComputing/htcondor-dashboard
+vcs: true
