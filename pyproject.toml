@@ -31,7 +31,12 @@ classifiers = [
   "Typing :: Typed",
 ]
 dynamic = ["version"]
-dependencies = []
+dependencies = [
+  "pandas",
+  "htcondor",
+  "streamlit",
+  "streamlit-extras",
+]
 
 [project.optional-dependencies]
 test = [
