@@ -22,20 +22,29 @@ def generate_cluster_overview(display_grid):
         "CPUs (available)": sum(slot_info["CPUs"]) - sum(slot_info["CPUs (Used)"]),
         "GPUs (available)": sum(slot_info["GPUs"]) - sum(slot_info["GPUs (Used)"]),
         "RAM [GB] (available)": sum(slot_info["RAM"]) // 1024 - sum(slot_info["RAM (Used)"]) // 1024,
-        
-        # "Total GPUs": sum(slot["TotalSlotGPUs"] for slot in slot_info),
-        # "Total RAM [GB]": sum(slot["TotalSlotMemory"] for slot in slot_info) // 1024,
-        # "Total Disk [GB]": sum(slot["TotalSlotDisk"] for slot in slot_info) // 1024 // 1024,
     }
     df_overview = pd.DataFrame.from_records([overview])
     display_grid.markdown("## Resources")
     display_grid.dataframe(df_overview, hide_index=True)
 
 def generate_submit_overview(display_grid):
-    submit_names = htc.get_submit_names()
-    df_names = pd.DataFrame(submit_names, columns=["Name"])
+    submit_info = htc.get_submit_info()
+    result = []
+    for schedd_name, job_info in submit_info.items():
+        _, job_summary = job_info
+        job_summary['Name'] = schedd_name
+        result.append(job_summary)
+    submit_info = pd.DataFrame.from_records(result)
+    submit_info = submit_info.sort_values(by="Name")
     display_grid.markdown("## Submit Nodes")
-    display_grid.dataframe(df_names, hide_index=True)
+    column_order = [
+        "Name",
+        "Jobs IDLE",
+        "Jobs RUNNING",
+        "Jobs HELD",
+        "Jobs COMPLETED",
+    ]
+    display_grid.dataframe(submit_info, hide_index=True, column_order=column_order)
 
 def generate_job_overview(display_grid):
     """ Things to show:
@@ -59,43 +68,3 @@ def generate_status_view():
 
 
 generate_status_view()
-# my_grid = grid(1, vertical_align="bottom")
-
-# generate_submit_overview(my_grid)
-
-
-# slot_info = htc.get_slots_info()
-# # create DF from slot_info
-# df = pd.DataFrame.from_records(slot_info).sort_values(by="Machine")
-# df.to_csv("slot_info.csv", index=False)
-# df["Status"] = df["Start"]
-# df = df[df["Name"].str.startswith("slot1@")]
-# df["OS"] = df["OpSysAndVer"] + "/" + df["Microarch"]
-# # my_grid.dataframe(df, hide_index=True, use_container_width=True)
-
-# df["Jobs"] = df["NumDynamicSlots"]
-# df["CPUs"] = df["TotalSlotCpus"]
-# df["CPUs (Used)"] = df["ChildCpus_summary"]
-# df["GPUs"] = df["TotalSlotGPUs"]
-# df["GPUs (Used)"] = df["ChildGPUs_summary"]
-# df["RAM [GB]"] = df["TotalSlotMemory"] // 1024
-# df["RAM [GB] (Used)"] = (df["ChildMemory_summary"]) // 1024
-# df["Disk [GB]"] = df["TotalSlotDisk"] // 1024 // 1024
-# df["Disk [MB] (Used)"] = df["ChildDisk_summary"] // 1024
-# column_order = [
-#     "Machine",
-#     "Status",
-#     "OS",
-#     "Jobs",
-#     "TotalLoadAvg",
-#     "CPUs",
-#     "CPUs (Used)",
-#     "GPUs",
-#     "GPUs (Used)",
-#     "RAM [GB]",
-#     "RAM [GB] (Used)",
-#     "Disk [GB]",
-#     "Disk [MB] (Used)",
-# ]
-# my_grid.markdown("## Node Summary")
-# my_grid.dataframe(df, column_order=column_order, hide_index=True)

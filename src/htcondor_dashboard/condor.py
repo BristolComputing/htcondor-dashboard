@@ -3,6 +3,18 @@
 import htcondor
 import pandas as pd
 
+
+def job_status_to_str(status):
+    return {
+        htcondor.JobStatus.IDLE: "IDLE",
+        htcondor.JobStatus.RUNNING: "RUNNING",
+        htcondor.JobStatus.REMOVED: "REMOVED",
+        htcondor.JobStatus.COMPLETED: "COMPLETED",
+        htcondor.JobStatus.HELD: "HELD",
+        htcondor.JobStatus.SUSPENDED: "SUSPENDED",
+    }.get(status, "UNKNOWN")
+
+
 def get_all_submitters():
     collector = htcondor.Collector()
     projection = ["Name", "MyAddress"]
@@ -15,7 +27,66 @@ def get_all_submitters():
 def get_submit_names():
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
+
     return [node["Name"] for node in ads]
+
+
+def _process_job_ad(job, ad):
+    return job.get(ad, "")
+
+
+def _jobs_info_to_df(jobs_info):
+    return pd.DataFrame.from_records(jobs_info)
+
+
+def _produce_job_info_summary(job_info):
+    if job_info.empty:
+        return {
+            "Jobs IDLE": 0,
+            "Jobs RUNNING": 0,
+            "Jobs HELD": 0,
+            "Jobs COMPLETED": 0,
+        }
+    return {
+        "Jobs IDLE": len(job_info[job_info["JobStatus"] == "IDLE"]),
+        "Jobs RUNNING": len(job_info[job_info["JobStatus"] == "RUNNING"]),
+        "Jobs HELD": len(job_info[job_info["JobStatus"] == "HELD"]),
+        "Jobs COMPLETED": len(job_info[job_info["JobStatus"] == "COMPLETED"]),
+    }
+
+
+def get_jobs_from_submit_node(schedd):
+    projection = [
+        "Owner",
+        "User",
+        "ExitStatus",
+        "Cmd",
+        "ClusterId",
+        "ProcId",
+        "GlobalJobId",
+        "JobStatus",
+        "RemoteSlotID",
+        "RemoteHost",
+    ]
+    job_ads = schedd.xquery(projection=projection)
+    result = []
+    for job in job_ads:
+        info = {name: _process_job_ad(job, name) for name in projection}
+        info["JobStatus"] = job_status_to_str(info["JobStatus"])
+        result.append(info)
+    job_info = _jobs_info_to_df(result)
+    return job_info, _produce_job_info_summary(job_info)
+
+
+def get_submit_info():
+    collector = htcondor.Collector()
+    ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
+    names = [node["Name"] for node in ads]
+    schedds = [htcondor.Schedd(node) for node in ads]
+    return {
+        name: get_jobs_from_submit_node(schedd) for name, schedd in zip(names, schedds)
+    }
+
 
 def _process_slot_ad(slot, ad):
     if ad == "Start":
@@ -25,7 +96,8 @@ def _process_slot_ad(slot, ad):
         return "DRAINING"
     return slot.get(ad, "")
 
-def _produce_summary(slot):
+
+def _produce_slot_info_summary(slot):
     summary = {}
     for key, value in slot.items():
         if key.startswith("Child") and type(value) is list:
@@ -33,9 +105,10 @@ def _produce_summary(slot):
             if any(x in key for x in ["User", "Group", "Owner"]):
                 summary[key] = value
                 continue
-            summary[key + '_summary'] = sum(value)
+            summary[key + "_summary"] = sum(value)
         summary[key] = value
     return summary
+
 
 def _slots_info_to_df(slots_info):
     slot_info = pd.DataFrame.from_records(slots_info).sort_values(by="Machine")
@@ -56,7 +129,7 @@ def _slots_info_to_df(slots_info):
         "ChildDisk_summary": "Disk (Used)",
     }
     slot_info = slot_info.rename(columns=to_rename)
-    
+
     slot_info["node"] = slot_info["FQDN"].str.extract(r"^([^\.]+)")
     slot_info["RAM [GB]"] = slot_info["RAM"] // 1024
     slot_info["RAM [GB] (Used)"] = slot_info["RAM (Used)"] // 1024
@@ -64,6 +137,7 @@ def _slots_info_to_df(slots_info):
     slot_info["Disk [MB] (Used)"] = slot_info["Disk (Used)"] // 1024
 
     return slot_info
+
 
 def get_slots_info():
     collector = htcondor.Collector()
@@ -103,36 +177,7 @@ def get_slots_info():
     result = []
     for slot in slots_info:
         info = {name: _process_slot_ad(slot, name) for name in projection}
-        info =_produce_summary(info)
+        info = _produce_slot_info_summary(info)
         result.append(info)
-    
+
     return _slots_info_to_df(result)
-
-
-# collector_address = "htc01.dice.priv:9618"
-# collector = htcondor.Collector(collector_address)
-# print(collector, dir(collector))
-# schedulers = get_all_submitters(collector)
-# print(schedulers)
-
-# for schedd in schedulers:
-#     print(schedd, dir(schedd))
-#     break
-
-# projection = ["Name", "MyAddress"]
-# all_submitters_query = collector.query(htcondor.AdTypes.Collector, projection=projection)
-# print(all_submitters_query)
-# schedds = [htcondor.Schedd(submitter) for submitter in all_submitters_query]
-
-# projection = ["Machine", "State", "Name", "SlotID", "Activity", "MyAddress"]
-# all_submitters_query = collector.query(htcondor.AdTypes.Startd, projection=projection)
-# slots_info = all_submitters_query
-# for slot in slots_info:
-#     name = slot.get("Machine", None)
-#     slot_id = slot.get("SlotID", None)
-#     activity = slot.get("Activity", None)
-#     state = slot.get("State", None)
-#     address = slot.get("MyAddress", "")
-#     print(name, slot_id, activity, state, address)
-# what do I want?
-# 1. A ta
