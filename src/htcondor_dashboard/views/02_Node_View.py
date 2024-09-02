@@ -52,6 +52,8 @@ def generate_node_summary(slot_info, display_grid):
         "RAM [GB] (Used)",
         "Disk [GB]",
         "Disk [MB] (Used)",
+        "Uptime [h]",
+        "Idle Time [h]",
     ]
     display_grid.markdown("## Node Summary")
     display_grid.dataframe(slot_info, column_order=column_order, hide_index=True)

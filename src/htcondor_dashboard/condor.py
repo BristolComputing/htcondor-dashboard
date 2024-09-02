@@ -135,6 +135,8 @@ def _slots_info_to_df(slots_info):
     slot_info["RAM [GB] (Used)"] = slot_info["RAM (Used)"] // 1024
     # slot_info["Disk [GB]"] = slot_info["Disk"] // 1024 // 1024
     slot_info["Disk [MB] (Used)"] = slot_info["Disk (Used)"] // 1024
+    slot_info["Idle Time [h]"] = slot_info["TotalTimeUnclaimedIdle"] // 3600
+    slot_info["Uptime [h]"] = (pd.Timestamp.today() - pd.to_datetime(slot_info["DaemonStartTime"], unit="s")).dt.days * 24
 
     return slot_info
 
@@ -172,6 +174,8 @@ def get_slots_info():
         "ChildRemoteUser",
         "ChildAccountingGroup",
         "ChildRemoteOwner",
+        "TotalTimeUnclaimedIdle",
+        "DaemonStartTime",
     ]
     slots_info = collector.query(htcondor.AdTypes.Startd)
     result = []
