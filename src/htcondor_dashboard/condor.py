@@ -111,6 +111,7 @@ def _produce_slot_info_summary(slot):
 
 
 def _slots_info_to_df(slots_info):
+    """Converts slot information to a pandas DataFrame"""
     slot_info = pd.DataFrame.from_records(slots_info).sort_values(by="Machine")
     # remove partitioned slots
     slot_info = slot_info[slot_info["Name"].str.startswith("slot1@")]
@@ -142,6 +143,7 @@ def _slots_info_to_df(slots_info):
 
 
 def get_slots_info():
+    """Queries the collector for all available slots (startds for each worker node)"""
     collector = htcondor.Collector()
     projection = [
         "Machine",
