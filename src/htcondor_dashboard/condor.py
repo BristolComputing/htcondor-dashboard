@@ -1,7 +1,20 @@
 # https://github.com/niclabs/htcondor-monitor/blob/master/CondorExporter/exporter/CondorExporter.py
 
+from dataclasses import dataclass
+import streamlit as st
 import htcondor
 import pandas as pd
+
+@dataclass
+class Condor_Settings:
+    exclude_submit_nodes: list[str]
+
+_settings: Condor_Settings = None
+
+if "condor" in st.secrets:
+    _settings = Condor_Settings(**st.secrets.condor)
+else:
+    _settings = Condor_Settings(exclude_submit_nodes=[])
 
 
 def job_status_to_str(status):
@@ -21,14 +34,14 @@ def get_all_submitters():
     all_submitters_query = collector.query(
         htcondor.AdTypes.Submitter, projection=projection
     )
-    return [htcondor.Schedd(submitter) for submitter in all_submitters_query]
+    return [htcondor.Schedd(submitter) for submitter in all_submitters_query if submitter["Name"] not in _settings.exclude_submit_nodes]
 
 
 def get_submit_names():
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
 
-    return [node["Name"] for node in ads]
+    return [node["Name"] for node in ads if node["Name"] not in _settings.exclude_submit_nodes]
 
 
 def _process_job_ad(job, ad):
@@ -65,10 +78,9 @@ def get_jobs_from_submit_node(schedd):
         "ProcId",
         "GlobalJobId",
         "JobStatus",
-        "RemoteSlotID",
         "RemoteHost",
     ]
-    job_ads = schedd.xquery(projection=projection)
+    job_ads = schedd.query(projection=projection)
     result = []
     for job in job_ads:
         info = {name: _process_job_ad(job, name) for name in projection}
@@ -84,7 +96,7 @@ def get_submit_info():
     names = [node["Name"] for node in ads]
     schedds = [htcondor.Schedd(node) for node in ads]
     return {
-        name: get_jobs_from_submit_node(schedd) for name, schedd in zip(names, schedds)
+        name: get_jobs_from_submit_node(schedd) for name, schedd in zip(names, schedds) if name not in _settings.exclude_submit_nodes
     }
 
 
