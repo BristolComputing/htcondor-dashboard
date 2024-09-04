@@ -27,7 +27,7 @@ def show_node(node, info, display_grid):
     display_grid.markdown("#### Jobs")
     job_columns = ["ChildRemoteUser", "ChildAccountingGroup", "ChildCpus", "ChildGPUs", "ChildMemory", "ChildDisk"]
     job_info = info[job_columns]
-    job_info["ChildAccountingGroup"] = job_info["ChildAccountingGroup"].apply(lambda x: [str(i) for i in x])
+    job_info.loc[:, "ChildAccountingGroup"] = job_info["ChildAccountingGroup"].apply(lambda x: [str(i) for i in x])
     job_info = job_info.apply(pd.Series.explode, ignore_index=True)
     display_grid.dataframe(job_info, hide_index=True, column_order=job_columns)
 
