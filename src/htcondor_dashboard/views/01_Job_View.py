@@ -1,4 +1,4 @@
 import streamlit as st
 
 
-st.markdown("# Job View (WIP)")
+st.markdown("# Job View 🚧")
