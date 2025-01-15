@@ -29,13 +29,7 @@ def generate_cluster_overview(display_grid):
     display_grid.dataframe(df_overview, hide_index=True)
 
 def generate_submit_overview(display_grid, submit_info):
-    result = []
-    for schedd_name, job_info in submit_info.items():
-        _, job_summary = job_info
-        job_summary['Name'] = schedd_name
-        result.append(job_summary)
-    submit_info = pd.DataFrame.from_records(result)
-    submit_info = submit_info.sort_values(by="Name")
+    submit_info = htc.get_submit_info()
     display_grid.markdown("## Submit Nodes")
     column_order = [
         "Name",
