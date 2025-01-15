@@ -106,6 +106,7 @@ def _produce_slot_info_summary(slot):
     return summary
 
 
+@cached(cache=TTLCache(maxsize=1024, ttl=60))
 def get_slots_info():
     """Queries the collector for all available slots (startds for each worker node)"""
     collector = htcondor.Collector()
