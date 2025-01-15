@@ -8,8 +8,7 @@ from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 import json
 
-
-from ._pandas import get_submit_info
+from ._pandas import get_submit_info, get_slots_info
 
 router = APIRouter(
     tags=["htcondor", "condor"],
@@ -21,3 +20,15 @@ router = APIRouter(
 def get_jobs() -> JSONResponse:
     jobs = get_submit_info().to_json(orient="split")
     return JSONResponse(content=json.loads(jobs), status_code=200)
+
+@router.get("/slots/all")
+def get_all_slots() -> JSONResponse:
+    slots = get_slots_info().to_json(orient="split")
+    return JSONResponse(content=json.loads(slots), status_code=200)
+
+@router.get("/slots/{hostname}")
+def get_slots(hostname: str) -> JSONResponse:
+    slots = get_slots_info()
+    slots = slots[slots["FQDN"].str.contains(hostname)].to_json(orient="split")
+
+    return JSONResponse(content=json.loads(slots), status_code=200)
