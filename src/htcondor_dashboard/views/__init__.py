@@ -41,3 +41,44 @@ async def get_jobs(request: Request) -> HTMLResponse:
         "job_view.html",
         {"request": request, "local_jobs":local_nodes, "remote_jobs": lcg_nodes},
     )
+
+@router.get("/slots/all")
+async def get_all_slots(request: Request) -> HTMLResponse:
+    api_endpoint = "http://localhost:8000/api/v1/slots/all"
+    requests_client = request.app.requests_client
+    r = await requests_client.get(api_endpoint)
+    if r.status_code != 200:
+        raise HTTPException(status_code=r.status_code, detail=r.json())
+
+    data = r.json()
+    slots = pd.DataFrame(**data)
+    # drop redundant columns
+    column_order = [
+        "FQDN",
+        # "Status",
+        "OS",
+        "Jobs",
+        "TotalLoadAvg",
+        "CPUs",
+        "CPUs (Used)",
+        "GPUs",
+        "GPUs (Used)",
+        "RAM [GB]",
+        "RAM [GB] (Used)",
+        # "Disk [GB]",
+        "Disk [MB] (Used)",
+        "Uptime [h]",
+        "Idle Time [h]",
+    ]
+
+    slots = slots[column_order]
+    # calculate totals for CPUs, GPUs, RAM, Disk and used resources
+    totals = slots.sum().drop(["FQDN", "OS", "TotalLoadAvg"])
+    totals_df = pd.DataFrame(totals).T
+
+
+    return templates.TemplateResponse(
+        "slot_view.html",
+        {"request": request, "slots":slots, "totals": totals_df},
+    )
+    return HTMLResponse(content="TODO: implement all slots endpoint")
