@@ -9,51 +9,34 @@
 </head>
 
 <body>
-  <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <a class="navbar-item" href="/views/jobs/all">
-        Cluster summary
-      </a>
-    </div>
-    <div class="navbar-menu">
-      <div class="navbar-start">
-        <a class="navbar-item" href="/views/slots/all">
-          Nodes
-        </a>
-        <a class="navbar-item" href="/views/submit/all">
-          Schedulers
-        </a>
-        <a class="navbar-item" href="http://grafana.dice.priv:3000/dashboard/public">
-          Historical data
-        </a>
-        <a class="navbar-item" href="/prometheus/metrics">
-          Metrics
-        </a>
-        <a class="navbar-item" href="/docs">
-          API
-        </a>
+  <section class="hero is-medium">
+    <div class="hero-head">
+      <div class="container">
+        {% include "partials/navbar.html" %}
       </div>
     </div>
-  </nav>
+  </section>
   <section class="section">
-    {% if view_template=="jobs_overview.html" %}
-    {% include "partials/jobs_overview.html" %}
-    {% elif view_template=="nodes_overview.html" %}
-    {% include "partials/nodes_overview.html" %}
-    {% elif view_template=="node_details.html" %}
-    {% include "partials/node_details.html" %}
-    {% elif view_template=="submit_overview.html" %}
-    {% include "partials/submit_overview.html" %}
-    {% else %}
-    <div class="container">
-      <h1 class="title">
-        HTCondor Dashboard
-      </h1>
-      <h2 class="subtitle">
-        Welcome to the HTCondor Dashboard
-      </h2>
+    <div class="container is-widescreen">
+      {% if view_template=="jobs_overview.html" %}
+      {% include "partials/jobs_overview.html" %}
+      {% elif view_template=="nodes_overview.html" %}
+      {% include "partials/nodes_overview.html" %}
+      {% elif view_template=="node_details.html" %}
+      {% include "partials/node_details.html" %}
+      {% elif view_template=="submit_overview.html" %}
+      {% include "partials/submit_overview.html" %}
+      {% else %}
+      <div class="container">
+        <h1 class="title">
+          HTCondor Dashboard
+        </h1>
+        <h2 class="subtitle">
+          Welcome to the HTCondor Dashboard
+        </h2>
+      </div>
+      {% endif %}
     </div>
-    {% endif %}
   </section>
 </body>
 
