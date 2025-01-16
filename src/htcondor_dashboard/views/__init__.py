@@ -39,8 +39,9 @@ async def get_jobs(request: Request) -> HTMLResponse:
 
     return templates.TemplateResponse(
         "job_view.html",
-        {"request": request, "local_jobs":local_nodes, "remote_jobs": lcg_nodes},
+        {"request": request, "local_jobs": local_nodes, "remote_jobs": lcg_nodes},
     )
+
 
 @router.get("/slots/all")
 async def get_all_slots(request: Request) -> HTMLResponse:
@@ -76,9 +77,70 @@ async def get_all_slots(request: Request) -> HTMLResponse:
     totals = slots.sum().drop(["FQDN", "OS", "TotalLoadAvg"])
     totals_df = pd.DataFrame(totals).T
 
-
     return templates.TemplateResponse(
         "slot_view.html",
-        {"request": request, "slots":slots, "totals": totals_df},
+        {"request": request, "slots": slots, "totals": totals_df},
     )
-    return HTMLResponse(content="TODO: implement all slots endpoint")
+
+
+@router.get("/slots/{node}")
+async def get_slots(node: str, request: Request) -> HTMLResponse:
+    api_endpoint = f"http://localhost:8000/api/v1/slots/{node}"
+    requests_client = request.app.requests_client
+    r = await requests_client.get(api_endpoint)
+    if r.status_code != 200:
+        raise HTTPException(status_code=r.status_code, detail=r.json())
+
+    data = r.json()
+    slots = pd.DataFrame(**data)
+    overview_columns = [
+        "FQDN",
+        "OS",
+        "Jobs",
+        "TotalLoadAvg",
+        "CPUs",
+        "CPUs (Used)",
+        "GPUs",
+        "GPUs (Used)",
+        "RAM [GB]",
+        "RAM [GB] (Used)",
+        "Disk [MB] (Used)",
+        "Uptime [h]",
+        "Idle Time [h]",
+    ]
+    overview = slots[overview_columns]
+    job_columns = slots.columns[slots.columns.str.contains("Child")]
+    job_details = slots[job_columns]
+    # all of the rows in job_details are lists, so we need to explode
+    job_details = job_details.apply(pd.Series.explode, ignore_index=True)
+    # remove the "Child" prefix from the column names
+    job_details.columns = job_details.columns.str.replace("Child", "")
+    # rename columns and convert units
+    # convert disk from KB to MB
+    job_details["Disk"] = job_details["Disk"] // 1024
+    job_details = job_details.rename(
+        columns={
+            "Memory": "Memory [MB]",
+            "Disk": "Disk [MB]",
+            "RemoteUser": "User",
+            "RemoteOwner": "Owner",
+            "Cpus": "CPUs",
+        }
+    )
+
+    # reorder columns
+    column_order = [
+        "User",
+        "Owner",
+        "AccountingGroup",
+        "CPUs",
+        "GPUs",
+        "Memory [MB]",
+        "Disk [MB]",
+    ]
+    job_details = job_details[column_order]
+
+    return templates.TemplateResponse(
+        "node_view.html",
+        {"request": request, "job_details": job_details, "overview": overview},
+    )
