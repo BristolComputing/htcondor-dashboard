@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get("/jobs")
+@router.get("/jobs/all")
 async def get_jobs(request: Request) -> HTMLResponse:
     api_endpoint = "http://localhost:8000/api/v1/jobs"
     settings = config.get_settings()
