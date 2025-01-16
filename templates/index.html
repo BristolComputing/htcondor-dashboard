@@ -1,21 +1,51 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hello Bulma!</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
-  </head>
-  <body>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello Bulma!</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css">
+</head>
+
+<body>
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/views/jobs/all">
+        Cluster summary
+      </a>
+    </div>
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/views/slots/all">
+          Nodes
+        </a>
+        <a class="navbar-item" href="/views/submit/all">
+          Schedulers
+        </a>
+      </div>
+    </div>
+  </nav>
   <section class="section">
+    {% if view_template=="jobs_overview.html" %}
+    {% include "partials/jobs_overview.html" %}
+    {% elif view_template=="nodes_overview.html" %}
+    {% include "partials/nodes_overview.html" %}
+    {% elif view_template=="node_details.html" %}
+    {% include "partials/node_details.html" %}
+    {% elif view_template=="submit_overview.html" %}
+    {% include "partials/submit_overview.html" %}
+    {% else %}
     <div class="container">
       <h1 class="title">
         HTCondor Dashboard
       </h1>
-      <p class="subtitle">
-        {{ message }}
-      </p>
+      <h2 class="subtitle">
+        Welcome to the HTCondor Dashboard
+      </h2>
     </div>
+    {% endif %}
   </section>
-  </body>
+</body>
+
 </html>

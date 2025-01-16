@@ -1,0 +1,47 @@
+<div class="container">
+  <h1 class="title">
+    HTCondor Node Overview
+  </h1>
+  <div class="container">
+    <h2 class="subtitle"> Overview </h2>
+    <table class="table is-striped is-fullwidth">
+      <thead>
+        <tr>
+          {% for column in overview.columns -%}
+          <th>{{ column }}</th>
+          {% endfor -%}
+        </tr>
+      </thead>
+      <tbody>
+        {% for _, row in overview.iterrows() -%}
+        <tr>
+          {% for column in overview.columns -%}
+          <td>{{ row[column] }}</td>
+          {% endfor -%}
+        </tr>
+        {% endfor -%}
+      </tbody>
+    </table>
+  </div>
+  <div class="container py-6">
+    <h2 class="subtitle"> Details </h2>
+    <table class="table is-striped is-fullwidth">
+      <thead>
+        <tr>
+          {% for column in job_details.columns -%}
+          <th>{{ column }}</th>
+          {% endfor -%}
+        </tr>
+      </thead>
+      <tbody>
+        {% for _, row in job_details.iterrows() %}
+        <tr>
+          {% for column in job_details.columns -%}
+          <td>{{ row[column] }}</td>
+          {% endfor -%}
+        </tr>
+        {% endfor -%}
+      </tbody>
+    </table>
+  </div>
+</div>
