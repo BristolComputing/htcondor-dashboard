@@ -42,7 +42,7 @@ def get_slots_info() -> pd.DataFrame:
     return slot_info_df
 
 
-def job_info_summary(job_info: dict[str, Any]) -> dict[str, int]:
+def job_info_summary(job_info: dict[str, Any]) -> dict[str, Any]:
     job_info_df = pd.DataFrame.from_records(job_info)
     if job_info_df.empty:
         return {

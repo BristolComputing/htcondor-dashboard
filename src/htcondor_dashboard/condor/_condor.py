@@ -7,7 +7,7 @@ import htcondor2 as htcondor
 from cachetools import TTLCache, cached
 
 
-def job_status_to_str(status) -> str:
+def job_status_to_str(status: int) -> str:
     return {
         htcondor.JobStatus.IDLE: "IDLE",
         htcondor.JobStatus.RUNNING: "RUNNING",
@@ -44,11 +44,11 @@ def get_submit_names(exclude_submit_nodes: list[str] | None = None) -> list[str]
     return [node["Name"] for node in ads if node["Name"] not in exclude_submit_nodes]
 
 
-def _process_job_ad(job, ad) -> Any:
+def _process_job_ad(job: Any, ad: str) -> Any:
     return job.get(ad, "")
 
 
-def get_jobs_from_submit_node(schedd) -> list[dict[str, Any]]:
+def get_jobs_from_submit_node(schedd: htcondor.Schedd) -> list[dict[str, Any]]:
     projection = [
         "Owner",
         "User",
@@ -71,7 +71,7 @@ def get_jobs_from_submit_node(schedd) -> list[dict[str, Any]]:
 
 
 @cached(cache=TTLCache(maxsize=1024, ttl=60))
-def get_submit_info(exclude_submit_nodes: list[str]) -> dict[str, Any]:
+def get_submit_info(exclude_submit_nodes: list[str] | None = None) -> dict[str, Any]:
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
     names = [node["Name"] for node in ads]
@@ -85,7 +85,7 @@ def get_submit_info(exclude_submit_nodes: list[str]) -> dict[str, Any]:
     }
 
 
-def _process_slot_ad(slot, ad) -> Any:
+def _process_slot_ad(slot: Any, ad: str) -> Any:
     if ad == "Start":
         value = slot.get(ad, False)
         if value:
@@ -94,7 +94,7 @@ def _process_slot_ad(slot, ad) -> Any:
     return slot.get(ad, "")
 
 
-def _produce_slot_info_summary(slot) -> dict[str, Any]:
+def _produce_slot_info_summary(slot: dict[str, Any]) -> dict[str, Any]:
     summary = {}
     for key, value in slot.items():
         if key.startswith("Child") and type(value) is list:
@@ -102,7 +102,7 @@ def _produce_slot_info_summary(slot) -> dict[str, Any]:
             if any(x in key for x in ["User", "Group", "Owner"]):
                 summary[key] = value
                 continue
-            summary[key + "_summary"] = sum(value)
+            summary[key + "_summary"] = sum(value)  # type:ignore[assignment]
         summary[key] = value
     return summary
 

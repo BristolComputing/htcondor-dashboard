@@ -12,6 +12,8 @@ from fastapi.responses import JSONResponse
 
 from ._pandas import get_slots_info, get_submit_info
 
+__all__ = ["get_slots_info", "get_submit_info"]
+
 router = APIRouter(
     tags=["htcondor", "condor"],
     responses={404: {"description": "Not found"}},
@@ -33,6 +35,6 @@ def get_all_slots() -> JSONResponse:
 @router.get("/slots/{hostname}")
 def get_slots(hostname: str) -> JSONResponse:
     slots = get_slots_info()
-    slots = slots[slots["FQDN"].str.contains(hostname)].to_json(orient="split")
+    slots_json = slots[slots["FQDN"].str.contains(hostname)].to_json(orient="split")
 
-    return JSONResponse(content=json.loads(slots), status_code=200)
+    return JSONResponse(content=json.loads(slots_json), status_code=200)
