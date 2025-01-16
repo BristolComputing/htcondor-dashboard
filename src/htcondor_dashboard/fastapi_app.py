@@ -1,7 +1,10 @@
 from __future__ import annotations
 
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, HTMLResponse
+from contextlib import asynccontextmanager
+
+import httpx
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from htcondor_dashboard.condor import router as condor_router
@@ -10,14 +13,12 @@ from htcondor_dashboard.prometheus import router as prometheus_router
 from htcondor_dashboard.views import router as view_router
 
 
-import httpx
-from contextlib import asynccontextmanager
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.requests_client = httpx.AsyncClient()
     yield
     await app.requests_client.aclose()
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -30,12 +31,9 @@ app.include_router(view_router, prefix="/views")
 templates = get_template_dir()
 
 
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request) -> HTMLResponse:
-    return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "message": "Welcome to the HTCondor Dasboard!"},
-    )
+@app.get("/", response_class=RedirectResponse)
+async def root() -> RedirectResponse:
+    return RedirectResponse(url="/views/jobs/all")
 
 
 @app.get("/health")
