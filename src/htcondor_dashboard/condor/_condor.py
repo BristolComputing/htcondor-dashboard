@@ -1,20 +1,8 @@
-# https://github.com/niclabs/htcondor-monitor/blob/master/CondorExporter/exporter/CondorExporter.py
+from __future__ import annotations
 
-from dataclasses import dataclass
-from cachetools import cached, TTLCache
-# import streamlit as st
+# inspired by https://github.com/niclabs/htcondor-monitor/blob/master/CondorExporter/exporter/CondorExporter.py
 import htcondor2 as htcondor
-
-# @dataclass
-# class Condor_Settings:
-#     exclude_submit_nodes: list[str]
-
-# _settings: Condor_Settings = None
-
-# if "condor" in st.secrets:
-#     _settings = Condor_Settings(**st.secrets.condor)
-# else:
-#     _settings = Condor_Settings(exclude_submit_nodes=[])
+from cachetools import TTLCache, cached
 
 
 def job_status_to_str(status):
@@ -28,16 +16,24 @@ def job_status_to_str(status):
     }.get(status, "UNKNOWN")
 
 
-def get_all_submitters(exclude_submit_nodes: list[str] = []):
+def get_all_submitters(exclude_submit_nodes: list[str] | None = None):
+    if exclude_submit_nodes is None:
+        exclude_submit_nodes = []
     collector = htcondor.Collector()
     projection = ["Name", "MyAddress"]
     all_submitters_query = collector.query(
         htcondor.AdTypes.Submitter, projection=projection
     )
-    return [htcondor.Schedd(submitter) for submitter in all_submitters_query if submitter["Name"] not in exclude_submit_nodes]
+    return [
+        htcondor.Schedd(submitter)
+        for submitter in all_submitters_query
+        if submitter["Name"] not in exclude_submit_nodes
+    ]
 
 
-def get_submit_names(exclude_submit_nodes: list[str] = []):
+def get_submit_names(exclude_submit_nodes: list[str] | None = None):
+    if exclude_submit_nodes is None:
+        exclude_submit_nodes = []
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
 
@@ -46,7 +42,6 @@ def get_submit_names(exclude_submit_nodes: list[str] = []):
 
 def _process_job_ad(job, ad):
     return job.get(ad, "")
-
 
 
 def get_jobs_from_submit_node(schedd):
@@ -67,7 +62,7 @@ def get_jobs_from_submit_node(schedd):
         info = {name: _process_job_ad(job, name) for name in projection}
         info["JobStatus"] = job_status_to_str(info["JobStatus"])
         result.append(info)
-    
+
     return result
 
 
@@ -80,7 +75,9 @@ def get_submit_info(exclude_submit_nodes: list[str]):
     if exclude_submit_nodes is None:
         exclude_submit_nodes = []
     return {
-        name: get_jobs_from_submit_node(schedd) for name, schedd in zip(names, schedds) if name not in exclude_submit_nodes
+        name: get_jobs_from_submit_node(schedd)
+        for name, schedd in zip(names, schedds)
+        if name not in exclude_submit_nodes
     }
 
 
