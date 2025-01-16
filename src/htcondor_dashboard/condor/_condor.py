@@ -18,7 +18,9 @@ def job_status_to_str(status) -> str:
     }.get(status, "UNKNOWN")
 
 
-def get_all_submitters(exclude_submit_nodes: list[str] | None = None) -> list[htcondor.Schedd]:
+def get_all_submitters(
+    exclude_submit_nodes: list[str] | None = None,
+) -> list[htcondor.Schedd]:
     if exclude_submit_nodes is None:
         exclude_submit_nodes = []
     collector = htcondor.Collector()

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 import pandas as pd
 
 from . import _condor as htc
@@ -40,7 +42,7 @@ def get_slots_info() -> pd.DataFrame:
     return slot_info_df
 
 
-def job_info_summary(job_info) -> dict[str, int]:
+def job_info_summary(job_info: dict[str, Any]) -> dict[str, int]:
     job_info_df = pd.DataFrame.from_records(job_info)
     if job_info_df.empty:
         return {
@@ -57,18 +59,20 @@ def job_info_summary(job_info) -> dict[str, int]:
     }
 
 
-def get_job_summary() -> pd.DataFrame:
-    job_info = htc.get_jobs_from_submit_node()
-    job_summary = job_info_summary(job_info)
-    return pd.DataFrame.from_records([job_summary])
+# def get_job_summary() -> pd.DataFrame:
+#     job_info = htc.get_jobs_from_submit_node()
+#     job_summary = job_info_summary(job_info)
+#     return pd.DataFrame.from_records([job_summary])
 
 
-def get_jobs_from_submit_node() -> pd.DataFrame:
-    job_info = htc.get_jobs_from_submit_node()
-    return pd.DataFrame.from_records(job_info)
+# def get_jobs_from_submit_node() -> pd.DataFrame:
+#     job_info = htc.get_jobs_from_submit_node()
+#     return pd.DataFrame.from_records(job_info)
 
 
 def get_submit_info(exclude_submit_nodes: list[str] | None = None) -> pd.DataFrame:
+    if exclude_submit_nodes is None:
+        exclude_submit_nodes = []
     submit_info = htc.get_submit_info(exclude_submit_nodes)
     result = []
     for schedd_name, job_info in submit_info.items():
