@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Any
+
 # inspired by https://github.com/niclabs/htcondor-monitor/blob/master/CondorExporter/exporter/CondorExporter.py
 import htcondor2 as htcondor
 from cachetools import TTLCache, cached
 
 
-def job_status_to_str(status):
+def job_status_to_str(status) -> str:
     return {
         htcondor.JobStatus.IDLE: "IDLE",
         htcondor.JobStatus.RUNNING: "RUNNING",
@@ -16,7 +18,7 @@ def job_status_to_str(status):
     }.get(status, "UNKNOWN")
 
 
-def get_all_submitters(exclude_submit_nodes: list[str] | None = None):
+def get_all_submitters(exclude_submit_nodes: list[str] | None = None) -> list[htcondor.Schedd]:
     if exclude_submit_nodes is None:
         exclude_submit_nodes = []
     collector = htcondor.Collector()
@@ -31,7 +33,7 @@ def get_all_submitters(exclude_submit_nodes: list[str] | None = None):
     ]
 
 
-def get_submit_names(exclude_submit_nodes: list[str] | None = None):
+def get_submit_names(exclude_submit_nodes: list[str] | None = None) -> list[str]:
     if exclude_submit_nodes is None:
         exclude_submit_nodes = []
     collector = htcondor.Collector()
@@ -40,11 +42,11 @@ def get_submit_names(exclude_submit_nodes: list[str] | None = None):
     return [node["Name"] for node in ads if node["Name"] not in exclude_submit_nodes]
 
 
-def _process_job_ad(job, ad):
+def _process_job_ad(job, ad) -> Any:
     return job.get(ad, "")
 
 
-def get_jobs_from_submit_node(schedd):
+def get_jobs_from_submit_node(schedd) -> list[dict[str, Any]]:
     projection = [
         "Owner",
         "User",
@@ -67,7 +69,7 @@ def get_jobs_from_submit_node(schedd):
 
 
 @cached(cache=TTLCache(maxsize=1024, ttl=60))
-def get_submit_info(exclude_submit_nodes: list[str]):
+def get_submit_info(exclude_submit_nodes: list[str]) -> dict[str, Any]:
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
     names = [node["Name"] for node in ads]
@@ -81,7 +83,7 @@ def get_submit_info(exclude_submit_nodes: list[str]):
     }
 
 
-def _process_slot_ad(slot, ad):
+def _process_slot_ad(slot, ad) -> Any:
     if ad == "Start":
         value = slot.get(ad, False)
         if value:
@@ -90,7 +92,7 @@ def _process_slot_ad(slot, ad):
     return slot.get(ad, "")
 
 
-def _produce_slot_info_summary(slot):
+def _produce_slot_info_summary(slot) -> dict[str, Any]:
     summary = {}
     for key, value in slot.items():
         if key.startswith("Child") and type(value) is list:
@@ -104,7 +106,7 @@ def _produce_slot_info_summary(slot):
 
 
 @cached(cache=TTLCache(maxsize=1024, ttl=60))
-def get_slots_info():
+def get_slots_info() -> list[dict[str, Any]]:
     """Queries the collector for all available slots (startds for each worker node)"""
     collector = htcondor.Collector()
     projection = [
