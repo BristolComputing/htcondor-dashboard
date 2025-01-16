@@ -25,7 +25,7 @@ app = FastAPI(lifespan=lifespan)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(condor_router, prefix="/api/v1")
-app.include_router(prometheus_router, prefix="/metrics")
+app.include_router(prometheus_router, prefix="/prometheus")
 app.include_router(view_router, prefix="/views")
 
 templates = get_template_dir()
