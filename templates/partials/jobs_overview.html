@@ -1,8 +1,12 @@
 <div class="container">
     <h1 class="title">
-        Job Overview
+        Cluster summary
     </h1>
     <div class="container">
+        <h2 class="subtitle"> Resource Overview </h2>
+        TODO: This will show the total and used amount of resources available in the cluster
+    </div>
+    <div class="container py-6">
         <h2 class="subtitle"> Local jobs </h2>
         <table class="table is-striped is-fullwidth">
             <thead>
@@ -43,5 +47,9 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+    <div class="container py-6">
+        <h2 class="subtitle"> Accounting Overview </h2>
+        TODO: This will show number of jobs by user and accounting group.
     </div>
 </div>
