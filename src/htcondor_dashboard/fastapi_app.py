@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from contextlib import asynccontextmanager
+from typing import Any
 
 import httpx
 from fastapi import FastAPI
@@ -14,10 +15,10 @@ from htcondor_dashboard.views import router as view_router
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
-    app.requests_client = httpx.AsyncClient()
+async def lifespan(app: FastAPI) -> Any:
+    app.requests_client = httpx.AsyncClient()  # type: ignore[attr-defined]
     yield
-    await app.requests_client.aclose()
+    await app.requests_client.aclose()  # type: ignore[attr-defined]
 
 
 app = FastAPI(lifespan=lifespan)
