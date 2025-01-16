@@ -55,7 +55,11 @@ repos:
         files: src|tests
         args: []
         additional_dependencies:
+          - fastapi
+          - pandas-stubs
+          - pydantic
           - pytest
+          - types-cachetools
 
   - repo: https://github.com/codespell-project/codespell
     rev: "v2.3.0"
