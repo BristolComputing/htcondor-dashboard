@@ -107,6 +107,13 @@ module = "htcondor_dashboard.*"
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
+[[tool.mypy.overrides]]
+module = "htcondor2"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "classad2"
+ignore_missing_imports = true
 
 [tool.ruff]
 
