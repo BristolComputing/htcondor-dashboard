@@ -1,7 +1,9 @@
-import streamlit as st
-from streamlit_extras.grid import grid
-import pandas as pd
+from __future__ import annotations
+
 from itertools import islice
+
+import pandas as pd
+from streamlit_extras.grid import grid
 
 import htcondor_dashboard.condor as htc
 
@@ -25,9 +27,18 @@ def show_node(node, info, display_grid):
     ]
     display_grid.dataframe(info, hide_index=True, column_order=column_order)
     display_grid.markdown("#### Jobs")
-    job_columns = ["ChildRemoteUser", "ChildAccountingGroup", "ChildCpus", "ChildGPUs", "ChildMemory", "ChildDisk"]
+    job_columns = [
+        "ChildRemoteUser",
+        "ChildAccountingGroup",
+        "ChildCpus",
+        "ChildGPUs",
+        "ChildMemory",
+        "ChildDisk",
+    ]
     job_info = info[job_columns]
-    job_info.loc[:, "ChildAccountingGroup"] = job_info["ChildAccountingGroup"].apply(lambda x: [str(i) for i in x])
+    job_info.loc[:, "ChildAccountingGroup"] = job_info["ChildAccountingGroup"].apply(
+        lambda x: [str(i) for i in x]
+    )
     job_info = job_info.apply(pd.Series.explode, ignore_index=True)
     display_grid.dataframe(job_info, hide_index=True, column_order=job_columns)
 
@@ -36,6 +47,7 @@ def batcher(iterable, batch_size):
     iterator = iter(iterable)
     while batch := list(islice(iterator, batch_size)):
         yield batch
+
 
 def generate_node_summary(slot_info, display_grid):
     column_order = [
@@ -59,7 +71,9 @@ def generate_node_summary(slot_info, display_grid):
     display_grid.dataframe(slot_info, column_order=column_order, hide_index=True)
 
 
-def generate_node_detail(slot_info, nodes, display_grid, batch_size=10, show_offline_nodes=False):
+def generate_node_detail(
+    slot_info, nodes, display_grid, batch_size=10, show_offline_nodes=False
+):
     display_grid.markdown("## Node Detail (WIP)")
     batches = list(batcher(nodes, batch_size))
     max_batch_size = max([len(batch) for batch in batches])
@@ -96,7 +110,8 @@ def generate_node_view():
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # node buttons (should come from batches)
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # node buttons (should come from batches)
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],  # node buttons (should come from batches)
-        1,1,
+        1,
+        1,
         vertical_align="bottom",
     )
     generate_node_summary(slot_info, display_grid)

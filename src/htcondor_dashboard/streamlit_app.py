@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 import streamlit as st
-from itertools import islice
 
 st.set_page_config(
     page_title="HTCondor Dashboard",
@@ -16,6 +17,14 @@ schedd_view = st.Page("views/03_Submit_View.py")
 historical_view = st.Page("views/09_Historical_View.py")
 other_page = st.Page("views/99_Other.py")
 
-pg = st.navigation([status_page, job_view_page, node_view_page, schedd_view, historical_view, other_page])
+pg = st.navigation(
+    [
+        status_page,
+        job_view_page,
+        node_view_page,
+        schedd_view,
+        historical_view,
+        other_page,
+    ]
+)
 pg.run()
-

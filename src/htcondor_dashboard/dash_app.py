@@ -12,7 +12,9 @@ app = Dash(__name__)
 gapminder_df = pd.read_csv(
     "https://raw.githubusercontent.com/plotly/datasets/master/gapminder2007.csv"
 )
-gapminder_df = gapminder_df[["continent", "country", "pop", "lifeExp"]]  # prune columns for example
+gapminder_df = gapminder_df[
+    ["continent", "country", "pop", "lifeExp"]
+]  # prune columns for example
 gapminder_df["Mock Date"] = [
     datetime.datetime(2020, 1, 1, 0, 0, 0) + i * datetime.timedelta(hours=13)
     for i in range(len(gapminder_df))

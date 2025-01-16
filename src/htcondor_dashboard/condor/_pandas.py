@@ -39,6 +39,7 @@ def get_slots_info() -> pd.DataFrame:
 
     return slot_info_df
 
+
 def job_info_summary(job_info) -> dict[str, int]:
     job_info_df = pd.DataFrame.from_records(job_info)
     if job_info_df.empty:
@@ -55,6 +56,7 @@ def job_info_summary(job_info) -> dict[str, int]:
         "Jobs COMPLETED": len(job_info_df[job_info_df["JobStatus"] == "COMPLETED"]),
     }
 
+
 def get_job_summary() -> pd.DataFrame:
     job_info = htc.get_jobs_from_submit_node()
     job_summary = job_info_summary(job_info)
@@ -65,7 +67,8 @@ def get_jobs_from_submit_node() -> pd.DataFrame:
     job_info = htc.get_jobs_from_submit_node()
     return pd.DataFrame.from_records(job_info)
 
-def get_submit_info(exclude_submit_nodes: list[str] | None = None ) -> pd.DataFrame:
+
+def get_submit_info(exclude_submit_nodes: list[str] | None = None) -> pd.DataFrame:
     submit_info = htc.get_submit_info(exclude_submit_nodes)
     result = []
     for schedd_name, job_info in submit_info.items():

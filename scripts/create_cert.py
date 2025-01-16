@@ -25,8 +25,8 @@ def main(ca_name: str, server: str):
     ca.cert_pem.write_to_path(ca_cert)
 
     print(f"Key: {key}")  # noqa: T201
-    print(f"Cert: {cert}") # noqa: T201
-    print(f"CA Cert: {ca_cert}") # noqa: T201
+    print(f"Cert: {cert}")  # noqa: T201
+    print(f"CA Cert: {ca_cert}")  # noqa: T201
 
 
 if __name__ == "__main__":

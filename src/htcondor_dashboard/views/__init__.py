@@ -38,7 +38,12 @@ async def get_jobs(request: Request) -> HTMLResponse:
 
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "local_jobs": local_nodes, "remote_jobs": lcg_nodes, "view_template": "jobs_overview.html"},
+        {
+            "request": request,
+            "local_jobs": local_nodes,
+            "remote_jobs": lcg_nodes,
+            "view_template": "jobs_overview.html",
+        },
     )
 
 
@@ -78,7 +83,12 @@ async def get_all_slots(request: Request) -> HTMLResponse:
 
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "slots": slots, "totals": totals_df, "view_template": "nodes_overview.html"},
+        {
+            "request": request,
+            "slots": slots,
+            "totals": totals_df,
+            "view_template": "nodes_overview.html",
+        },
     )
 
 
@@ -143,7 +153,12 @@ async def get_slots(node: str, request: Request) -> HTMLResponse:
 
     return templates.TemplateResponse(
         "index.html",
-        {"request": request, "job_details": job_details, "overview": overview, 'view_template': 'node_details.html'},
+        {
+            "request": request,
+            "job_details": job_details,
+            "overview": overview,
+            "view_template": "node_details.html",
+        },
     )
 
 
