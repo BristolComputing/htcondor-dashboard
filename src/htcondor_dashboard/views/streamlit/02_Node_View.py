@@ -71,9 +71,7 @@ def generate_node_summary(slot_info, display_grid):
     display_grid.dataframe(slot_info, column_order=column_order, hide_index=True)
 
 
-def generate_node_detail(
-    slot_info, nodes, display_grid, batch_size=10, show_offline_nodes=False
-):
+def generate_node_detail(slot_info, nodes, display_grid, batch_size=10):
     display_grid.markdown("## Node Detail (WIP)")
     batches = list(batcher(nodes, batch_size))
     max_batch_size = max([len(batch) for batch in batches])
