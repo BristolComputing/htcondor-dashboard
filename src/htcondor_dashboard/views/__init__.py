@@ -38,8 +38,8 @@ async def get_jobs(request: Request) -> HTMLResponse:
     local_nodes = jobs[~lcg_mask]
 
     return templates.TemplateResponse(
-        "job_view.html",
-        {"request": request, "local_jobs": local_nodes, "remote_jobs": lcg_nodes},
+        "index.html",
+        {"request": request, "local_jobs": local_nodes, "remote_jobs": lcg_nodes, "view_template": "jobs_overview.html"},
     )
 
 
@@ -78,8 +78,8 @@ async def get_all_slots(request: Request) -> HTMLResponse:
     totals_df = pd.DataFrame(totals).T
 
     return templates.TemplateResponse(
-        "slot_view.html",
-        {"request": request, "slots": slots, "totals": totals_df},
+        "index.html",
+        {"request": request, "slots": slots, "totals": totals_df, "view_template": "nodes_overview.html"},
     )
 
 
@@ -139,13 +139,18 @@ async def get_slots(node: str, request: Request) -> HTMLResponse:
         "Disk [MB]",
     ]
     job_details = job_details[column_order]
+    # replace NaNs with "---"
+    job_details = job_details.fillna("---")
 
     return templates.TemplateResponse(
-        "node_view.html",
-        {"request": request, "job_details": job_details, "overview": overview},
+        "index.html",
+        {"request": request, "job_details": job_details, "overview": overview, 'view_template': 'node_details.html'},
     )
 
 
-@router.get("/submit_nodes/all")
+@router.get("/submit/all")
 async def get_all_submit_nodes(request: Request) -> HTMLResponse:
-    return HTMLResponse(content="Not implemented yet")
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request, "view_template": "submit_overview.html"},
+    )
