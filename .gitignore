@@ -160,3 +160,4 @@ Thumbs.db
 .streamlit
 *.csv
 requirements.txt
+notes.md
