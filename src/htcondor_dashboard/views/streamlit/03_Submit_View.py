@@ -1,7 +1,10 @@
-import streamlit as st
+from __future__ import annotations
+
 import pandas as pd
-import htcondor_dashboard.condor as htc
 import plotly.express as px
+import streamlit as st
+
+import htcondor_dashboard.condor as htc
 
 
 def generate_submit_overview(display_grid, submit_info):

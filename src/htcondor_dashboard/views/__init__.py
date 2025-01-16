@@ -1,9 +1,8 @@
 from __future__ import annotations
 
+import pandas as pd
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import HTMLResponse
-
-import pandas as pd
 
 from htcondor_dashboard import config
 

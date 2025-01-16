@@ -1,10 +1,10 @@
-import streamlit as st
-from streamlit_extras.grid import grid
+from __future__ import annotations
+
 import pandas as pd
 import plotly.express as px
+import streamlit as st
 
 import htcondor_dashboard.condor as htc
-
 
 ## Status page
 # 1. Used + free resources (CPU, RAM, GPU)
@@ -65,7 +65,7 @@ def generate_job_overview(display_grid, submit_info):
             columns[i].plotly_chart(pie_chart, use_container_width=True)
 
 
-def generate_share_overview(display_grid, submit_info):
+def generate_share_overview(display_grid):
     display_grid.markdown("## Share Overview 🚧")
     display_grid.dataframe(pd.DataFrame.from_records([{
         "group": "example1",
