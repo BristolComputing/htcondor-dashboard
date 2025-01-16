@@ -62,6 +62,7 @@ repos:
           - pydantic_settings
           - pytest
           - types-cachetools
+          - uvicorn
 
   - repo: https://github.com/codespell-project/codespell
     rev: "v2.3.0"
