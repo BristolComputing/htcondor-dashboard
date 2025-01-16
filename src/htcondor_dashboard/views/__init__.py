@@ -144,3 +144,8 @@ async def get_slots(node: str, request: Request) -> HTMLResponse:
         "node_view.html",
         {"request": request, "job_details": job_details, "overview": overview},
     )
+
+
+@router.get("/submit_nodes/all")
+async def get_all_submit_nodes(request: Request) -> HTMLResponse:
+    return HTMLResponse(content="Not implemented yet")
