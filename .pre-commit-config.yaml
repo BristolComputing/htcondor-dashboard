@@ -58,6 +58,7 @@ repos:
           - fastapi
           - pandas-stubs
           - pydantic
+          - pydantic_settings
           - pytest
           - types-cachetools
 
