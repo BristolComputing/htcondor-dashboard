@@ -1,9 +1,7 @@
 <div class="container">
-  <h1 class="title">
-    HTCondor worker nodes
-  </h1>
+  <h1 class="title">HTCondor worker nodes</h1>
   <div class="container">
-    <h2 class="subtitle"> Overview </h2>
+    <h2 class="subtitle">Overview</h2>
     <table class="table is-striped is-fullwidth">
       <thead>
         <tr>
@@ -24,7 +22,7 @@
     </table>
   </div>
   <div class="container py-6">
-    <h2 class="subtitle"> Details </h2>
+    <h2 class="subtitle">Details</h2>
     <table class="table is-striped is-fullwidth">
       <thead>
         <tr>
@@ -36,13 +34,13 @@
       <tbody>
         {% for _, row in slots.iterrows() %}
         <tr>
-          {% for column in slots.columns -%}
-          {% if column == "FQDN" -%}
-          <td><a href="/views/slots/{{ row[column] }}">{{ row[column] }}</a></td>
+          {% for column in slots.columns -%} {% if column == "FQDN" -%}
+          <td>
+            <a href="/views/slots/{{ row[column] }}">{{ row[column] }}</a>
+          </td>
           {% else -%}
           <td>{{ row[column] }}</td>
-          {% endif -%}
-          {% endfor -%}
+          {% endif -%} {% endfor -%}
         </tr>
         {% endfor -%}
       </tbody>

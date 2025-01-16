@@ -1,55 +1,54 @@
 <div class="container">
-    <h1 class="title">
-        Cluster summary
-    </h1>
-    <div class="container">
-        <h2 class="subtitle"> Resource Overview </h2>
-        TODO: This will show the total and used amount of resources available in the cluster
-    </div>
-    <div class="container py-6">
-        <h2 class="subtitle"> Local jobs </h2>
-        <table class="table is-striped is-fullwidth">
-            <thead>
-                <tr>
-                    {% for column in local_jobs.columns %}
-                    <th>{{ column }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for _, row in local_jobs.iterrows() %}
-                <tr>
-                    {% for column in local_jobs.columns %}
-                    <td>{{ row[column] }}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="container py-6">
-        <h2 class="subtitle"> Remote jobs </h2>
-        <table class="table is-striped is-fullwidth">
-            <thead>
-                <tr>
-                    {% for column in remote_jobs.columns %}
-                    <th>{{ column }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for _, row in remote_jobs.iterrows() %}
-                <tr>
-                    {% for column in remote_jobs.columns %}
-                    <td>{{ row[column] }}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="container py-6">
-        <h2 class="subtitle"> Accounting Overview </h2>
-        TODO: This will show number of jobs by user and accounting group.
-    </div>
+  <h1 class="title">Cluster summary</h1>
+  <div class="container">
+    <h2 class="subtitle">Resource Overview</h2>
+    TODO: This will show the total and used amount of resources available in the
+    cluster
+  </div>
+  <div class="container py-6">
+    <h2 class="subtitle">Local jobs</h2>
+    <table class="table is-striped is-fullwidth">
+      <thead>
+        <tr>
+          {% for column in local_jobs.columns %}
+          <th>{{ column }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for _, row in local_jobs.iterrows() %}
+        <tr>
+          {% for column in local_jobs.columns %}
+          <td>{{ row[column] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="container py-6">
+    <h2 class="subtitle">Remote jobs</h2>
+    <table class="table is-striped is-fullwidth">
+      <thead>
+        <tr>
+          {% for column in remote_jobs.columns %}
+          <th>{{ column }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for _, row in remote_jobs.iterrows() %}
+        <tr>
+          {% for column in remote_jobs.columns %}
+          <td>{{ row[column] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="container py-6">
+    <h2 class="subtitle">Accounting Overview</h2>
+    TODO: This will show number of jobs by user and accounting group.
+  </div>
 </div>
