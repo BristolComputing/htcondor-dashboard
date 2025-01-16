@@ -12,7 +12,7 @@ class Settings(BaseSettings):
 
 
 @lru_cache
-def get_settings():
+def get_settings() -> Settings:
     # os.environ['HTDASH_exclude_submit_nodes'] = '["status.dice.priv","submit-3"]'
     # os.environ['HTDASH_EXCLUDE_SUBMIT_NODES'] = '["status.dice.priv","submit-2"]'
     try:
@@ -22,5 +22,5 @@ def get_settings():
     return settings
 
 
-def get_template_dir():
+def get_template_dir() -> Jinja2Templates:
     return Jinja2Templates(directory="templates")
