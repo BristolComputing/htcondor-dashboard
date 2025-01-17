@@ -1,25 +1,14 @@
 from __future__ import annotations
 
-from contextlib import asynccontextmanager
-from typing import Any
-
-import httpx
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+from htcondor_dashboard._fastapi import lifespan
 from htcondor_dashboard.condor import router as condor_router
 from htcondor_dashboard.config import get_template_dir
 from htcondor_dashboard.prometheus import router as prometheus_router
 from htcondor_dashboard.views import router as view_router
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> Any:
-    app.requests_client = httpx.AsyncClient()  # type: ignore[attr-defined]
-    yield
-    await app.requests_client.aclose()  # type: ignore[attr-defined]
-
 
 app = FastAPI(lifespan=lifespan)
 
