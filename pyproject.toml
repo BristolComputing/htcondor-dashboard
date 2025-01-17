@@ -32,11 +32,13 @@ classifiers = [
 dynamic = ["version"]
 dependencies = [
   "cachetools",
-  "pandas",
-  "pydantic-settings",
   "htcondor",
+  "httpx",
   "fastapi",
   "jinja2",
+  "pandas",
+  "pydantic-settings",
+  "uvicorn",
 ]
 
 [project.optional-dependencies]
