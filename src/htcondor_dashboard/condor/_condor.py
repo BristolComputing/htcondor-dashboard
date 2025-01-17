@@ -97,7 +97,7 @@ def _process_slot_ad(slot: Any, ad: str) -> Any:
 def _produce_slot_info_summary(slot: dict[str, Any]) -> dict[str, Any]:
     summary = {}
     for key, value in slot.items():
-        if key.startswith("Child") and type(value) is list:
+        if key.startswith("Child") and isinstance(value, list):
             # if "User" in key or "Group" in key:
             if any(x in key for x in ["User", "Group", "Owner"]):
                 summary[key] = value
