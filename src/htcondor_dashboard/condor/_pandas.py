@@ -4,6 +4,7 @@ from typing import Any
 
 import pandas as pd
 
+from ..config import ListSetting
 from . import _condor as htc
 
 
@@ -70,7 +71,7 @@ def job_info_summary(job_info: dict[str, Any]) -> dict[str, Any]:
 #     return pd.DataFrame.from_records(job_info)
 
 
-def get_submit_info(exclude_submit_nodes: tuple[str] = ()) -> pd.DataFrame:  # type:ignore[assignment]
+def get_submit_info(exclude_submit_nodes: ListSetting) -> pd.DataFrame:
     submit_info = htc.get_submit_info(exclude_submit_nodes)
     result = []
     for schedd_name, job_info in submit_info.items():

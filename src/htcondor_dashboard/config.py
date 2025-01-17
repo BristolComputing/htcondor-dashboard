@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Tuple, Union
 
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+ListSetting = Union[Tuple[str], Tuple[()]]
 
 
 class Settings(BaseSettings):
@@ -13,7 +16,7 @@ class Settings(BaseSettings):
     Settings can be set via environment variables starting with HTDASH_.
     """
 
-    exclude_submit_nodes: tuple[str] | tuple[()] | None
+    exclude_submit_nodes: ListSetting
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
 
 
