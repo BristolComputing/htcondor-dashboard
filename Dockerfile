@@ -20,4 +20,4 @@ EXPOSE 8501
 
 # HEALTHCHECK CMD curl --fail http://localhost:800/health
 
-ENTRYPOINT ["./run.sh"]
+ENTRYPOINT ["./scripts/run.sh"]
