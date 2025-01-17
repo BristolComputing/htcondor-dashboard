@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     Settings can be set via environment variables starting with HTDASH_.
     """
 
-    exclude_submit_nodes: list[str] = []
+    exclude_submit_nodes: tuple[str] = ()  # type: ignore[assignment]
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
 
 
@@ -24,7 +24,7 @@ def get_settings() -> Settings:
     try:
         settings = Settings()
     except ValidationError as _:
-        settings = Settings(exclude_submit_nodes=[])
+        settings = Settings(exclude_submit_nodes=())  # type: ignore[arg-type]
     return settings
 
 
