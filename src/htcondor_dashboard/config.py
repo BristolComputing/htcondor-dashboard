@@ -3,10 +3,16 @@ from __future__ import annotations
 from functools import lru_cache
 
 from fastapi.templating import Jinja2Templates
+from pydantic import ValidationError
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
+    """
+    Class to hold the settings for the HTCondor Dashboard.
+    Settings can be set via environment variables starting with HTDASH_.
+    """
+
     exclude_submit_nodes: list[str] = []
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
 
@@ -17,7 +23,7 @@ def get_settings() -> Settings:
     # os.environ['HTDASH_EXCLUDE_SUBMIT_NODES'] = '["status.dice.priv","submit-2"]'
     try:
         settings = Settings()
-    except Exception as _:
+    except ValidationError as _:
         settings = Settings(exclude_submit_nodes=[])
     return settings
 
