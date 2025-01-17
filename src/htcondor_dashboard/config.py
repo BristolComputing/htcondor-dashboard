@@ -13,18 +13,20 @@ class Settings(BaseSettings):
     Settings can be set via environment variables starting with HTDASH_.
     """
 
-    exclude_submit_nodes: tuple[str] = ()  # type: ignore[assignment]
+    exclude_submit_nodes: tuple[str] | tuple[()] | None
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
 
 
 @lru_cache
 def get_settings() -> Settings:
+    """Cached function to get the settings for the HTCondor Dashboard.
+    Sets defaults if the settings are not found.
+    """
     # os.environ['HTDASH_exclude_submit_nodes'] = '["status.dice.priv","submit-3"]'
-    # os.environ['HTDASH_EXCLUDE_SUBMIT_NODES'] = '["status.dice.priv","submit-2"]'
     try:
-        settings = Settings()
+        settings = Settings()  # type: ignore[call-arg]
     except ValidationError as _:
-        settings = Settings(exclude_submit_nodes=())  # type: ignore[arg-type]
+        settings = Settings(exclude_submit_nodes=())
     return settings
 
 

@@ -19,10 +19,8 @@ def job_status_to_str(status: int) -> str:
 
 
 def get_all_submitters(
-    exclude_submit_nodes: list[str] | None = None,
+    exclude_submit_nodes: tuple[str] = (),  # type:ignore[assignment]
 ) -> list[htcondor.Schedd]:
-    if exclude_submit_nodes is None:
-        exclude_submit_nodes = []
     collector = htcondor.Collector()
     projection = ["Name", "MyAddress"]
     all_submitters_query = collector.query(
@@ -35,9 +33,7 @@ def get_all_submitters(
     ]
 
 
-def get_submit_names(exclude_submit_nodes: list[str] | None = None) -> list[str]:
-    if exclude_submit_nodes is None:
-        exclude_submit_nodes = []
+def get_submit_names(exclude_submit_nodes: tuple[str] = ()) -> list[str]:  # type:ignore[assignment]
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
 
@@ -71,13 +67,11 @@ def get_jobs_from_submit_node(schedd: htcondor.Schedd) -> list[dict[str, Any]]:
 
 
 @cached(cache=TTLCache(maxsize=1024, ttl=60))
-def get_submit_info(exclude_submit_nodes: list[str] | None = None) -> dict[str, Any]:
+def get_submit_info(exclude_submit_nodes: tuple[str] = ()) -> dict[str, Any]:  # type:ignore[assignment]
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
     names = [node["Name"] for node in ads]
     schedds = [htcondor.Schedd(node) for node in ads]
-    if exclude_submit_nodes is None:
-        exclude_submit_nodes = []
     return {
         name: get_jobs_from_submit_node(schedd)
         for name, schedd in zip(names, schedds)

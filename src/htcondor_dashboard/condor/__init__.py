@@ -10,6 +10,7 @@ import json
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
+from ..config import get_settings
 from ._pandas import get_slots_info, get_submit_info
 
 __all__ = ["get_slots_info", "get_submit_info"]
@@ -22,7 +23,7 @@ router = APIRouter(
 
 @router.get("/jobs")
 def get_jobs() -> JSONResponse:
-    jobs = get_submit_info().to_json(orient="split")
+    jobs = get_submit_info(get_settings().exclude_submit_nodes).to_json(orient="split")
     return JSONResponse(content=json.loads(jobs), status_code=200)
 
 

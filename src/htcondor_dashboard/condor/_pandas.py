@@ -70,9 +70,7 @@ def job_info_summary(job_info: dict[str, Any]) -> dict[str, Any]:
 #     return pd.DataFrame.from_records(job_info)
 
 
-def get_submit_info(exclude_submit_nodes: list[str] | None = None) -> pd.DataFrame:
-    if exclude_submit_nodes is None:
-        exclude_submit_nodes = []
+def get_submit_info(exclude_submit_nodes: tuple[str] = ()) -> pd.DataFrame:  # type:ignore[assignment]
     submit_info = htc.get_submit_info(exclude_submit_nodes)
     result = []
     for schedd_name, job_info in submit_info.items():
