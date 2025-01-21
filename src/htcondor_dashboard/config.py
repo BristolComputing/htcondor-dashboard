@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     """
 
     exclude_submit_nodes: ListSetting
+    grafana_url: str = "http://localhost:3000"
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
 
 
