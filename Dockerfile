@@ -11,13 +11,24 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
+RUN python -m pip install uv
+
+COPY ./pyproject.toml .
+RUN uv venv \
+    && uv pip compile pyproject.toml > requirements.txt \
+    && uv pip install -r requirements.txt
 
 COPY . .
 
-RUN python -m pip install -e .
+RUN uv pip install -e .
 
 EXPOSE 8501
 
-# HEALTHCHECK CMD curl --fail http://localhost:800/health
+ENV APP_ROOT="/"
+ENV PATH="/app/.venv/bin:${PATH}"
 
-ENTRYPOINT ["./scripts/run.sh"]
+# workaround for Docker CMD not expanding environment variables
+RUN echo "#!/bin/bash\nfastapi run src/htcondor_dashboard/fastapi_app.py --port 8000 --root-path \${APP_ROOT}" > /app/entrypoint.sh \
+    && chmod a+x /app/entrypoint.sh
+
+CMD ["sh", "-c", "/app/entrypoint.sh"]
