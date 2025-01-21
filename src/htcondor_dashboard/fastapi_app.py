@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -22,8 +22,8 @@ templates = get_template_dir()
 
 
 @app.get("/", response_class=RedirectResponse)
-async def root() -> RedirectResponse:
-    return RedirectResponse(url="/views/jobs/all")
+async def root(request: Request) -> RedirectResponse:
+    return RedirectResponse(url=request.url_for("cluster_summary"))
 
 
 @app.get("/health")
