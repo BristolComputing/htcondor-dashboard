@@ -1,0 +1,8 @@
+__pycache__
+.github
+.mypy_cache
+.nox
+.ruff_cache
+.streamlit
+docs
+service
