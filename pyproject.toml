@@ -33,7 +33,7 @@ dependencies = [
   "cachetools",
   "htcondor",
   "httpx",
-  "fastapi",
+  "fastapi[standard]",
   "jinja2",
   "pandas",
   "pydantic-settings",
