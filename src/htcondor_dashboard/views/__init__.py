@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 
-@router.get("/jobs/all")
+@router.get("/jobs/all", name="cluster_summary")
 async def get_jobs(request: Request) -> HTMLResponse:
     api_endpoint = "http://localhost:8000/api/v1/jobs"
     settings = config.get_settings()
@@ -47,7 +47,7 @@ async def get_jobs(request: Request) -> HTMLResponse:
     )
 
 
-@router.get("/slots/all")
+@router.get("/slots/all", name="node_summary")
 async def get_all_slots(request: Request) -> HTMLResponse:
     api_endpoint = "http://localhost:8000/api/v1/slots/all"
     requests_client = request.app.requests_client
@@ -92,7 +92,7 @@ async def get_all_slots(request: Request) -> HTMLResponse:
     )
 
 
-@router.get("/slots/{node}")
+@router.get("/slots/{node}", name="node_details")
 async def get_slots(node: str, request: Request) -> HTMLResponse:
     api_endpoint = f"http://localhost:8000/api/v1/slots/{node}"
     requests_client = request.app.requests_client
@@ -162,7 +162,7 @@ async def get_slots(node: str, request: Request) -> HTMLResponse:
     )
 
 
-@router.get("/submit/all")
+@router.get("/submit/all", name="submit_summary")
 async def get_all_submit_nodes(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
         "index.html",
