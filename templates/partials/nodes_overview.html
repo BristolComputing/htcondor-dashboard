@@ -36,7 +36,9 @@
         <tr>
           {% for column in slots.columns -%} {% if column == "FQDN" -%}
           <td>
-            <a href="/views/slots/{{ row[column] }}">{{ row[column] }}</a>
+            <a href="{{ url_for('node_details', node=row[column]) }}"
+              >{{ row[column] }}</a
+            >
           </td>
           {% else -%}
           <td>{{ row[column] }}</td>
