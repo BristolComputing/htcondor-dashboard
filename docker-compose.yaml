@@ -1,0 +1,49 @@
+version: "3.8"
+services:
+  proxy:
+    image: "traefik:v3.3"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/podman/podman.sock:/var/run/docker.sock:z"
+    security_opt:
+      - "label=type:container_runtime_t"
+    networks:
+      - podman
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  condor_dashboard:
+    image: "docker.io/kreczko/htcondor-dashboard:latest"
+    restart: unless-stopped
+    ports:
+      - "19618:8000"
+    environment:
+      HTDASH_exclude_submit_nodes: "[status.dice.priv,prometheus.phy.bris.ac.uk]"
+      HTDASH_grafana_url: "http://grafana.dice.priv:3000/dashboard/public"
+      APP_ROOT: "/condor"
+    volumes:
+      - /etc/condor:/etc/condor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      # Explicitly tell Traefik to expose this container
+      - "traefik.enable=true"
+      # The domain the service will respond to
+      - "traefik.http.routers.condor.rule=Host(`localhost`) &&
+        PathPrefix(`/condor`)"
+      # Allow request only from the predefined entry point named "web"
+      - "traefik.http.routers.condor.entrypoints=web"
+      - "traefik.http.services.condor.loadbalancer.server.port=8000"
+      - "traefik.http.middlewares.condor-stripprefix.stripprefix.prefixes=/condor"
+      - "traefik.http.routers.condor.middlewares=condor-stripprefix@docker"
+networks:
+  podman:
+    external: true
