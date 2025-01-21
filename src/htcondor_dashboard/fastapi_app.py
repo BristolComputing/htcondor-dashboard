@@ -35,6 +35,20 @@ async def health_check() -> JSONResponse:
     return JSONResponse(content={"status": "healthy"}, status_code=200)
 
 
+@app.get("/debug")
+async def debug(request: Request) -> JSONResponse:
+    url_list = [
+        {"path": route.path, "name": route.name} for route in request.app.routes
+    ]
+    return JSONResponse(
+        content={
+            "message": "Hello World",
+            "root_path": request.scope.get("root_path"),
+            "routes": url_list,
+        }
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
 
