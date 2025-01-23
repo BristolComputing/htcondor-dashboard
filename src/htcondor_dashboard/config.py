@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 
     exclude_submit_nodes: tuple[str, ...]
     grafana_url: str = "http://localhost:3000"
+    htcondor_ce_view_url: str = "http://example_ce"
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
 
 
