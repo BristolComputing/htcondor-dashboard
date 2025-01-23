@@ -21,7 +21,7 @@ router = APIRouter(
 )
 
 
-@router.get("/jobs")
+@router.get("/jobs", name="api_v1_get_jobs")
 def get_jobs() -> JSONResponse:
     jobs = get_submit_info(get_settings().exclude_submit_nodes).to_json(orient="split")
     return JSONResponse(content=json.loads(jobs), status_code=200)
@@ -39,3 +39,10 @@ def get_slots(hostname: str) -> JSONResponse:
     slots_json = slots[slots["FQDN"].str.contains(hostname)].to_json(orient="split")
 
     return JSONResponse(content=json.loads(slots_json), status_code=200)
+
+
+@router.get("/config")
+async def config() -> JSONResponse:
+    config = get_settings()
+    json_content = config.model_dump(mode="json")
+    return JSONResponse(content=json_content, status_code=200)
