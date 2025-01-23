@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from htcondor_dashboard._fastapi import lifespan
-from htcondor_dashboard.condor import router as condor_router
+from htcondor_dashboard.condor import router as api_router
 from htcondor_dashboard.config import get_template_dir
 from htcondor_dashboard.prometheus import router as prometheus_router
 from htcondor_dashboard.views import router as view_router
@@ -14,7 +14,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-app.include_router(condor_router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api/v1")
 app.include_router(prometheus_router, prefix="/prometheus")
 app.include_router(view_router, prefix="/views")
 
