@@ -6,8 +6,6 @@ from typing import Any
 import htcondor2 as htcondor
 from cachetools import TTLCache, cached
 
-from ..config import ListSetting
-
 
 def job_status_to_str(status: int) -> str:
     return {
@@ -21,7 +19,7 @@ def job_status_to_str(status: int) -> str:
 
 
 def get_all_submitters(
-    exclude_submit_nodes: ListSetting = (),
+    exclude_submit_nodes: tuple[str, ...] = (),
 ) -> list[htcondor.Schedd]:
     collector = htcondor.Collector()
     projection = ["Name", "MyAddress"]
@@ -35,7 +33,7 @@ def get_all_submitters(
     ]
 
 
-def get_submit_names(exclude_submit_nodes: ListSetting) -> list[str]:
+def get_submit_names(exclude_submit_nodes: tuple[str, ...]) -> list[str]:
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
 
@@ -69,7 +67,7 @@ def get_jobs_from_submit_node(schedd: htcondor.Schedd) -> list[dict[str, Any]]:
 
 
 @cached(cache=TTLCache(maxsize=1024, ttl=60))
-def get_submit_info(exclude_submit_nodes: ListSetting) -> dict[str, Any]:
+def get_submit_info(exclude_submit_nodes: tuple[str, ...]) -> dict[str, Any]:
     collector = htcondor.Collector()
     ads = collector.locateAll(htcondor.DaemonTypes.Schedd)
     names = [node["Name"] for node in ads]
