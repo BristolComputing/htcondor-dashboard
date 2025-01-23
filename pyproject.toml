@@ -36,6 +36,7 @@ dependencies = [
   "fastapi[standard]",
   "jinja2",
   "pandas",
+  "prometheus_client",
   "pydantic-settings",
   "uvicorn",
 ]
