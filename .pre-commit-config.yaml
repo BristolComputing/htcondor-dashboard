@@ -58,6 +58,7 @@ repos:
           - fastapi
           - httpx
           - pandas-stubs
+          - prometheus_client
           - pydantic
           - pydantic_settings
           - pytest
