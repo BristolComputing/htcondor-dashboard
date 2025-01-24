@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     Settings can be set via environment variables starting with HTDASH_.
     """
 
-    exclude_submit_nodes: tuple[str, ...]
+    exclude_submit_nodes: tuple[str, ...] = ()
     grafana_url: str = "http://localhost:3000"
     htcondor_ce_view_url: str = "http://example_ce"
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
@@ -25,7 +25,7 @@ def get_settings() -> Settings:
     Sets defaults if the settings are not found.
     """
     try:
-        settings = Settings()  # type: ignore[call-arg]
+        settings = Settings()
     except ValidationError as _:
         settings = Settings(exclude_submit_nodes=())
     return settings
