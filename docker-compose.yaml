@@ -26,7 +26,7 @@ services:
     ports:
       - "19618:8000"
     environment:
-      HTDASH_exclude_submit_nodes: "[status.dice.priv,prometheus.phy.bris.ac.uk]"
+      HTDASH_exclude_submit_nodes: '["status.dice.priv","prometheus.phy.bris.ac.uk"]'
       HTDASH_grafana_url: "http://grafana.dice.priv:3000/dashboard/public"
       APP_ROOT: "/condor"
     volumes:
