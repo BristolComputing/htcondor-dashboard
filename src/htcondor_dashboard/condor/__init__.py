@@ -41,8 +41,8 @@ def get_slots(hostname: str) -> JSONResponse:
     return JSONResponse(content=json.loads(slots_json), status_code=200)
 
 
-@router.get("/config")
-async def config() -> JSONResponse:
+@router.get("/config", name="api_v1_get_config")
+async def get_config() -> JSONResponse:
     config = get_settings()
     json_content = config.model_dump(mode="json")
     return JSONResponse(content=json_content, status_code=200)

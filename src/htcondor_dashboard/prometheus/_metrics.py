@@ -42,7 +42,6 @@ def fill_submit_info() -> None:
 
 
 def fill_metrics() -> None:
-    global METRICS  # noqa: PLW0602
     fill_submit_info()
 
 
