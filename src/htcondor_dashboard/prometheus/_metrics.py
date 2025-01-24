@@ -19,7 +19,6 @@ def summary_metrics() -> dict[str, Any]:
 
 
 def create_metrics() -> None:
-    global METRICS  # noqa: PLW0602
     if METRICS:
         return
     METRICS.update(summary_metrics())
