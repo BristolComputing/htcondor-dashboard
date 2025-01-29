@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from cachetools import TTLCache, cached
 from prometheus_client import Gauge
 
 from ..condor import get_submit_info
@@ -44,6 +45,7 @@ def fill_metrics() -> None:
     fill_submit_info()
 
 
+@cached(cache=TTLCache(maxsize=1024, ttl=60))
 def load() -> dict[str, Any]:
     create_metrics()
     fill_metrics()
