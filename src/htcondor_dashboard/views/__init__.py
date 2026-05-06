@@ -37,9 +37,9 @@ async def get_jobs(request: Request) -> HTMLResponse:
     local_nodes = jobs[~lcg_mask]
 
     return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
+        request=request,
+        name="index.html",
+        context={
             "local_jobs": local_nodes,
             "remote_jobs": lcg_nodes,
             "view_template": "jobs_overview.html",
@@ -82,9 +82,9 @@ async def get_all_slots(request: Request) -> HTMLResponse:
     totals_df = pd.DataFrame(totals).T
 
     return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
+        request=request,
+        name="index.html",
+        context={
             "slots": slots,
             "totals": totals_df,
             "view_template": "nodes_overview.html",
@@ -152,9 +152,9 @@ async def get_slots(node: str, request: Request) -> HTMLResponse:
     job_details = job_details.fillna("---")
 
     return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
+        request=request,
+        name="index.html",
+        context={
             "job_details": job_details,
             "overview": overview,
             "view_template": "node_details.html",
@@ -165,6 +165,7 @@ async def get_slots(node: str, request: Request) -> HTMLResponse:
 @router.get("/submit/all", name="submit_summary")
 async def get_all_submit_nodes(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "view_template": "submit_overview.html"},
+        request=request,
+        name="index.html",
+        context={"view_template": "submit_overview.html"},
     )
