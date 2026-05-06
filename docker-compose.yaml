@@ -29,21 +29,20 @@ services:
       HTDASH_exclude_submit_nodes: '["status.dice.priv","prometheus.phy.bris.ac.uk"]'
       HTDASH_grafana_url: "http://grafana.dice.priv:3000/dashboard/public"
       APP_ROOT: "/condor"
+      HTDASH_report_path: "/srv/htcondor-accounting/reports"
+    networks:
+      - podman
     volumes:
       - /etc/condor:/etc/condor
+      - /software/dice/accounting/reports:/srv/htcondor-accounting/reports:ro
     extra_hosts:
       - "host.docker.internal:host-gateway"
     labels:
-      # Explicitly tell Traefik to expose this container
       - "traefik.enable=true"
-      # The domain the service will respond to
-      - "traefik.http.routers.condor.rule=Host(`localhost`) &&
-        PathPrefix(`/condor`)"
-      # Allow request only from the predefined entry point named "web"
+      - "traefik.http.routers.condor.rule=Host(`localhost`) && PathPrefix(`/condor`)"
       - "traefik.http.routers.condor.entrypoints=web"
       - "traefik.http.services.condor.loadbalancer.server.port=8000"
       - "traefik.http.middlewares.condor-stripprefix.stripprefix.prefixes=/condor"
       - "traefik.http.routers.condor.middlewares=condor-stripprefix@docker"
 networks:
   podman:
-    external: true

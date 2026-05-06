@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 
 from htcondor_dashboard._fastapi import lifespan
 from htcondor_dashboard.condor import router as api_router
-from htcondor_dashboard.config import get_template_dir
+from htcondor_dashboard.config import get_settings, get_template_dir
 from htcondor_dashboard.prometheus import router as prometheus_router
 from htcondor_dashboard.views import router as view_router
 
@@ -19,6 +19,13 @@ app.include_router(prometheus_router, prefix="/prometheus")
 app.include_router(view_router, prefix="/views")
 
 templates = get_template_dir()
+settings = get_settings()
+if settings.report_path is not None and settings.report_path.exists():
+    app.mount(
+        "/reports",
+        StaticFiles(directory=str(settings.report_path), html=True),
+        name="reports",
+    )
 
 
 @app.get("/", response_class=RedirectResponse)

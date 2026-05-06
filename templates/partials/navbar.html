@@ -10,28 +10,17 @@
       <a class="navbar-item" href="{{ url_for('submit_summary') }}">
         Schedulers
       </a>
-      <a
-        class="navbar-item"
-        href="http://grafana.dice.priv:3000/dashboard/public"
-        target="_blank"
-      >
+      <a class="navbar-item" href="{{ request.url_for('reports', path='') }}">Accounting</a>
+      <a class="navbar-item" href="http://grafana.dice.priv:3000/dashboard/public" target="_blank">
         Historical data
       </a>
       <a class="navbar-item" href="{{ url_for('prometheus_metrics') }}">
         Metrics
       </a>
       <a class="navbar-item" href="{{ url_for('swagger_ui_html') }}"> API </a>
-      <a
-        class="navbar-item"
-        href="https://github.com/BristolComputing/htcondor-dashboard"
-        target="_blank"
-      >
+      <a class="navbar-item" href="https://github.com/BristolComputing/htcondor-dashboard" target="_blank">
         <figure class="image is-32x32">
-          <img
-            class="is-rounded"
-            src="{{ url_for('static', path='github.png') }}"
-            alt="GitHub"
-          />
+          <img class="is-rounded" src="{{ url_for('static', path='github.png') }}" alt="GitHub" />
         </figure>
       </a>
     </div>

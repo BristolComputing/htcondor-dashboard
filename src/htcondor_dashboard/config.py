@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
 
 from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
@@ -16,6 +17,7 @@ class Settings(BaseSettings):
     exclude_submit_nodes: tuple[str, ...] = ()
     grafana_url: str = "http://localhost:3000"
     htcondor_ce_view_url: str = "http://example_ce"
+    report_path: Path | None = None
     model_config = SettingsConfigDict(env_prefix="HTDASH_")
 
 
