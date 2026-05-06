@@ -1,34 +1,26 @@
-# app/Dockerfile
-
 FROM python:3.12-slim
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
-    build-essential \
     curl \
-    software-properties-common \
     git \
+    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-RUN python -m pip install uv
+RUN python -m pip install --no-cache-dir uv
 
-COPY ./pyproject.toml .
-RUN uv venv \
-    && uv pip compile pyproject.toml > requirements.txt \
-    && uv pip install -r requirements.txt
+COPY pyproject.toml .
+# COPY uv.lock .  # if you have one
+
+RUN uv venv
 
 COPY . .
 
-RUN uv pip install -e .
+RUN uv pip install .
 
-EXPOSE 8501
-
-ENV APP_ROOT="/"
 ENV PATH="/app/.venv/bin:${PATH}"
+ENV APP_ROOT="/"
+EXPOSE 8000
 
-# workaround for Docker CMD not expanding environment variables
-RUN echo "#!/bin/bash\nfastapi run src/htcondor_dashboard/fastapi_app.py --port 8000 --root-path \${APP_ROOT}" > /app/entrypoint.sh \
-    && chmod a+x /app/entrypoint.sh
-
-CMD ["sh", "-c", "/app/entrypoint.sh"]
+CMD ["sh", "-c", "fastapi run src/htcondor_dashboard/fastapi_app.py --host 0.0.0.0 --port 8000 --root-path ${APP_ROOT}"]

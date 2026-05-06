@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   proxy:
     image: "traefik:v3.3"
@@ -13,6 +12,7 @@ services:
       - "80:80"
       - "8080:8080"
     volumes:
+      # - "${XDG_RUNTIME_DIR}/podman/podman.sock:/var/run/docker.sock:z"
       - "/var/run/podman/podman.sock:/var/run/docker.sock:z"
     security_opt:
       - "label=type:container_runtime_t"
@@ -21,7 +21,10 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
   condor_dashboard:
-    image: "docker.io/kreczko/htcondor-dashboard:latest"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: htcondor-dashboard:local
     restart: unless-stopped
     ports:
       - "19618:8000"
@@ -39,7 +42,8 @@ services:
       - "host.docker.internal:host-gateway"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.condor.rule=Host(`localhost`) && PathPrefix(`/condor`)"
+      - "traefik.http.routers.condor.rule=Host(`localhost`) &&
+        PathPrefix(`/condor`)"
       - "traefik.http.routers.condor.entrypoints=web"
       - "traefik.http.services.condor.loadbalancer.server.port=8000"
       - "traefik.http.middlewares.condor-stripprefix.stripprefix.prefixes=/condor"
